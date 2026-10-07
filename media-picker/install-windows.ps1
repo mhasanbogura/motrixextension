@@ -5,6 +5,7 @@ $InstallDir = Join-Path $env:LOCALAPPDATA 'Media Picker'
 $OldInstallDir = Join-Path $env:LOCALAPPDATA 'Motrix Social Resolver'
 $HostName = 'com.motrix.media_picker'
 $ChromeExtensionId = 'ffamkaafaenbpmjeflbjkncogmkbcmnn'
+$LocalExtensionId = 'pccpgknpkdeomcalpemihaaffcfmfjok'
 $FirefoxExtensionId = 'motrixextension@mhasanbogura'
 
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
@@ -58,7 +59,7 @@ function Register-Host($Path, $Browser) {
       description = 'Media Picker native media resolver'
       path = $Launcher
       type = 'stdio'
-      allowed_origins = @("chrome-extension://$ChromeExtensionId/")
+      allowed_origins = @("chrome-extension://$ChromeExtensionId/", "chrome-extension://$LocalExtensionId/")
     }
   }
   $Manifest | ConvertTo-Json -Depth 4 | Set-Content -Path $Path -Encoding utf8

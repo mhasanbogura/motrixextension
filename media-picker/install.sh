@@ -6,6 +6,7 @@ INSTALL_DIR="${MEDIA_PICKER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/media-pick
 OLD_INSTALL_DIR="${MOTRIX_RESOLVER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/motrix-social-resolver}"
 HOST_NAME='com.motrix.media_picker'
 CHROME_EXTENSION_ID='ffamkaafaenbpmjeflbjkncogmkbcmnn'
+LOCAL_EXTENSION_ID='pccpgknpkdeomcalpemihaaffcfmfjok'
 FIREFOX_EXTENSION_ID='motrixextension@mhasanbogura'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -59,7 +60,7 @@ EOF
   "description": "Media Picker native media resolver",
   "path": "$INSTALL_DIR/run-native.sh",
   "type": "stdio",
-  "allowed_origins": ["chrome-extension://$CHROME_EXTENSION_ID/"]
+  "allowed_origins": ["chrome-extension://$CHROME_EXTENSION_ID/", "chrome-extension://$LOCAL_EXTENSION_ID/"]
 }
 EOF
   fi
