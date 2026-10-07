@@ -6,7 +6,7 @@ import { loadSnapshot } from '@/library/storage';
 import { filenameFromUrl } from '@/library/download/filename-metadata';
 import { getDownloadCaptureType, isProtocolEnabled, isUrlBlocked } from '@/library/download/filter';
 import {
-  formatSocialResolverError,
+  formatMediaPickerError,
   isSocialMediaUrl,
   normalizeSocialMediaPageUrl,
   resolveSocialMedia,
@@ -131,8 +131,8 @@ export async function routeUrl(
     } catch (error) {
       return {
         ok: false,
-        code: 'social_resolver_unavailable',
-        message: formatSocialResolverError(error, resolverPageUrl || pageUrl),
+        code: 'media_picker_unavailable',
+        message: formatMediaPickerError(error, resolverPageUrl || pageUrl),
       };
     }
     input = {

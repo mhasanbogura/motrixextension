@@ -5,7 +5,7 @@ import type { RuntimeResponse } from '@/library/messages';
 import { loadSnapshot } from '@/library/storage';
 import { filenameFromUrl, isWeakFilename, sanitizeFilename } from '@/library/download/filename-metadata';
 import {
-  formatSocialResolverError,
+  formatMediaPickerError,
   isGenericSocialTitle,
   isSocialMediaUrl,
   normalizeSocialMediaPageUrl,
@@ -92,7 +92,7 @@ export async function submitPendingPicker(
         userAgent: pending.input.userAgent,
       });
     } catch (error) {
-      throw new Error(formatSocialResolverError(error, socialPageUrl));
+      throw new Error(formatMediaPickerError(error, socialPageUrl));
     }
   }
   const pickerFilename = isGenericSocialTitle(filename)

@@ -2,14 +2,24 @@
 set -euo pipefail
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
-INSTALL_DIR="${MOTRIX_RESOLVER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/motrix-social-resolver}"
-HOST_NAME='com.motrix.social_resolver'
+INSTALL_DIR="${MEDIA_PICKER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/media-picker}"
+OLD_INSTALL_DIR="${MOTRIX_RESOLVER_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/motrix-social-resolver}"
+HOST_NAME='com.motrix.media_picker'
 CHROME_EXTENSION_ID='ffamkaafaenbpmjeflbjkncogmkbcmnn'
-FIREFOX_EXTENSION_ID='motrix-webextension@mhasanbogura'
+FIREFOX_EXTENSION_ID='motrixextension@mhasanbogura'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 mkdir -p "$INSTALL_DIR"
-cp "$SCRIPT_DIR/social_resolver.py" "$INSTALL_DIR/social_resolver.py"
+
+# Migrate the previous Social Resolver install (cookies + venv) once.
+if [[ "$OLD_INSTALL_DIR" != "$INSTALL_DIR" && -d "$OLD_INSTALL_DIR" && ! -f "$INSTALL_DIR/.migrated" ]]; then
+  cp -a "$OLD_INSTALL_DIR/." "$INSTALL_DIR/"
+  touch "$INSTALL_DIR/.migrated"
+  echo "Migrated previous install: $OLD_INSTALL_DIR -> $INSTALL_DIR"
+fi
+
+cp "$SCRIPT_DIR/media_picker.py" "$INSTALL_DIR/media_picker.py"
+rm -f "$INSTALL_DIR/social_resolver.py"
 if [[ ! -f "$INSTALL_DIR/cookies.txt" ]]; then
   cp "$SCRIPT_DIR/cookies.txt" "$INSTALL_DIR/cookies.txt"
 fi
@@ -24,7 +34,7 @@ fi
 
 cat > "$INSTALL_DIR/run-native.sh" <<EOF
 #!/usr/bin/env bash
-exec "$INSTALL_DIR/.venv/bin/python" "$INSTALL_DIR/social_resolver.py"
+exec "$INSTALL_DIR/.venv/bin/python" "$INSTALL_DIR/media_picker.py"
 EOF
 chmod 755 "$INSTALL_DIR/run-native.sh"
 
@@ -36,7 +46,7 @@ write_manifest() {
     cat > "$path" <<EOF
 {
   "name": "$HOST_NAME",
-  "description": "Motrix public social-media resolver",
+  "description": "Media Picker native media resolver",
   "path": "$INSTALL_DIR/run-native.sh",
   "type": "stdio",
   "allowed_extensions": ["$FIREFOX_EXTENSION_ID"]
@@ -46,7 +56,7 @@ EOF
     cat > "$path" <<EOF
 {
   "name": "$HOST_NAME",
-  "description": "Motrix public social-media resolver",
+  "description": "Media Picker native media resolver",
   "path": "$INSTALL_DIR/run-native.sh",
   "type": "stdio",
   "allowed_origins": ["chrome-extension://$CHROME_EXTENSION_ID/"]
@@ -72,6 +82,6 @@ case "$(uname -s)" in
     ;;
 esac
 
-printf '%s\n' 'Motrix Social Resolver installed for on-demand native messaging with yt-dlp EJS and Deno support.'
+printf '%s\n' 'Media Picker installed for on-demand native messaging with yt-dlp EJS and Deno support.'
 printf '%s\n' "Installed helper: $INSTALL_DIR"
 printf '%s\n' 'Restart the browser once after installation. No resolver command is needed for each download.'

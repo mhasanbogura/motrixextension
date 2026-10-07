@@ -1,7 +1,7 @@
 import type { AddDownloadInput } from '@/library/rpc';
 import type { ConnectionConfig } from '@/library/storage';
 
-export interface SocialResolverRequest {
+export interface MediaPickerRequest {
   url: string;
   cookie?: string;
   action?: 'resolve';
@@ -23,7 +23,7 @@ interface NativeThumbnailRequest {
   headers?: Array<{ name: string; value: string }>;
 }
 
-export interface SocialResolverResponse {
+export interface MediaPickerResponse {
   ok: boolean;
   ext?: string;
   url?: string;
@@ -36,13 +36,13 @@ export interface SocialResolverResponse {
   headers?: Record<string, string>;
 }
 
-type NativeMessage = SocialResolverRequest | NativeRenameRequest | NativeThumbnailRequest;
+type NativeMessage = MediaPickerRequest | NativeRenameRequest | NativeThumbnailRequest;
 
 interface NativeMessagingRuntime {
   sendNativeMessage: (hostName: string, message: NativeMessage) => Promise<unknown>;
 }
 
-const NATIVE_HOST_NAME = 'com.motrix.social_resolver';
+const NATIVE_HOST_NAME = 'com.motrix.media_picker';
 const SOCIAL_HOSTS = new Set(['facebook.com', 'fb.watch', 'dailymotion.com', 'dai.ly', 'pornhub.com', 'youtube.com', 'youtu.be']);
 const FACEBOOK_REEL_TITLE_OVERRIDES = new Map([
   ['2041242353190545', 'The Son-in-law save the billionaire grand father from being poisoned and change everything'],
@@ -106,7 +106,7 @@ export function isGenericSocialTitle(value: string): boolean {
   return isGenericFilename(value);
 }
 
-export function formatSocialResolverError(error: unknown, pageUrl?: string): string {
+export function formatMediaPickerError(error: unknown, pageUrl?: string): string {
   const message = error instanceof Error ? error.message : String(error);
   if (pageUrl && isPornhubUrl(pageUrl) && /youtube|po token|account access/i.test(message)) {
     return 'Pornhub did not expose a direct downloadable media format for this request. Confirm the video is available in the authorized browser session, then use Motrix media capture.';
@@ -114,16 +114,16 @@ export function formatSocialResolverError(error: unknown, pageUrl?: string): str
   return message;
 }
 
-export async function resolveSocialMedia(request: SocialResolverRequest): Promise<AddDownloadInput> {
+export async function resolveSocialMedia(request: MediaPickerRequest): Promise<AddDownloadInput> {
   const runtime = browser.runtime as unknown as NativeMessagingRuntime;
-  let result: SocialResolverResponse;
+  let result: MediaPickerResponse;
   try {
     result = parseResolverResponse(await runtime.sendNativeMessage(NATIVE_HOST_NAME, { action: 'resolve', ...request }));
   } catch (error) {
     throw new Error(
       error instanceof Error
-        ? `Install the Motrix Social Resolver helper first: ${error.message}`
-        : 'Install the Motrix Social Resolver helper first.',
+        ? `Install the Media Picker helper first: ${error.message}`
+        : 'Install the Media Picker helper first.',
     );
   }
   if (!result.ok || !result.url) {
@@ -167,7 +167,7 @@ export async function scheduleThumbnailEmbedding(
 
 export async function renameLocalFile(path: string, filename: string): Promise<void> {
   const runtime = browser.runtime as unknown as NativeMessagingRuntime;
-  let result: SocialResolverResponse;
+  let result: MediaPickerResponse;
   try {
     result = parseResolverResponse(await runtime.sendNativeMessage(NATIVE_HOST_NAME, {
       action: 'rename',
@@ -188,7 +188,7 @@ function isHttpUrl(value: string | undefined): value is string {
   return typeof value === 'string' && /^https?:\/\//i.test(value);
 }
 
-function parseResolverResponse(value: unknown): SocialResolverResponse {
+function parseResolverResponse(value: unknown): MediaPickerResponse {
   if (!value || typeof value !== 'object') throw new Error('Invalid social resolver response');
   const result = value as Record<string, unknown>;
   return {

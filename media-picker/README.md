@@ -1,6 +1,6 @@
-# Motrix social-media resolver
+# Media Picker
 
-This helper provides the Snaptube-like download path used by the Motrix WebExtension for public or user-authorized Facebook, YouTube, Dailymotion, and Pornhub page URLs. It uses `yt-dlp` to discover an available direct media format and returns the URL, filename, thumbnail, and required request headers to the extension. Motrix then opens the normal IDM-style picker and sends the task to aria2.
+This helper provides the Snaptube-like download path used by the Motrix Extension for public or user-authorized Facebook, YouTube, Dailymotion, and Pornhub page URLs. It uses `yt-dlp` to discover an available direct media format and returns the URL, filename, thumbnail, and required request headers to the extension. 
 
 ## One-time installation
 
@@ -26,18 +26,18 @@ The package includes an empty `cookies.txt` template. The installer copies it to
 On Linux and macOS, the file is:
 
 ```text
-~/.local/share/motrix-social-resolver/cookies.txt
+~/.local/share/media-picker/cookies.txt
 ```
 
 On Windows, the file is:
 
 ```text
-%LOCALAPPDATA%\Motrix Social Resolver\cookies.txt
+%LOCALAPPDATA%\Media Picker\cookies.txt
 ```
 
 The resolver automatically uses this file when it contains valid Netscape cookie rows. Otherwise, it falls back to the browser cookies passed by the extension. Close the browser or export cookies using a trusted method before replacing the file, and never send, publish, commit, or share `cookies.txt`; it contains active account credentials and may grant access to your social-media accounts. Delete or replace it when the cookies expire or are no longer needed.
 
-The extension’s stable native-helper registration uses host name `com.motrix.social_resolver`. No resolver URL needs to be entered in settings.
+The extension’s stable native-helper registration uses host name `com.motrix.media_picker`. No resolver URL needs to be entered in settings.
 
 The helper accepts only HTTP(S) page URLs on Facebook, fb.watch, YouTube, youtu.be, Dailymotion, dai.ly, or Pornhub. After a social download completes, the helper uses the page thumbnail as embedded cover artwork when the downloaded container and local ffmpeg support it. Use it only for media you are authorized to download and in accordance with the platform’s terms.
 

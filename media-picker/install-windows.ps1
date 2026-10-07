@@ -1,13 +1,20 @@
 $ErrorActionPreference = 'Stop'
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$InstallDir = Join-Path $env:LOCALAPPDATA 'Motrix Social Resolver'
-$HostName = 'com.motrix.social_resolver'
+$InstallDir = Join-Path $env:LOCALAPPDATA 'Media Picker'
+$OldInstallDir = Join-Path $env:LOCALAPPDATA 'Motrix Social Resolver'
+$HostName = 'com.motrix.media_picker'
 $ChromeExtensionId = 'ffamkaafaenbpmjeflbjkncogmkbcmnn'
-$FirefoxExtensionId = 'motrix-webextension@mhasanbogura'
+$FirefoxExtensionId = 'motrixextension@mhasanbogura'
 
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
-Copy-Item (Join-Path $ScriptDir 'social_resolver.py') (Join-Path $InstallDir 'social_resolver.py') -Force
+# Migrate the previous Social Resolver install (cookies + venv) once.
+if ((Test-Path $OldInstallDir) -and (-not (Test-Path (Join-Path $InstallDir '.migrated')))) {
+  Copy-Item (Join-Path $OldInstallDir '*') $InstallDir -Recurse -Force
+  New-Item -ItemType File -Force -Path (Join-Path $InstallDir '.migrated') | Out-Null
+}
+Copy-Item (Join-Path $ScriptDir 'media_picker.py') (Join-Path $InstallDir 'media_picker.py') -Force
+Remove-Item (Join-Path $InstallDir 'social_resolver.py') -ErrorAction SilentlyContinue
 $CookieFile = Join-Path $InstallDir 'cookies.txt'
 if (-not (Test-Path $CookieFile)) {
   Copy-Item (Join-Path $ScriptDir 'cookies.txt') $CookieFile
@@ -33,14 +40,14 @@ if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
 }
 
 $Launcher = Join-Path $InstallDir 'run-native.bat'
-"@echo off`r`n`"$VenvPython`" `"$(Join-Path $InstallDir 'social_resolver.py')`"" | Set-Content -Path $Launcher -Encoding ascii
+"@echo off`r`n`"$VenvPython`" `"$(Join-Path $InstallDir 'media_picker.py')`"" | Set-Content -Path $Launcher -Encoding ascii
 
 function Register-Host($Path, $Browser) {
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $Path) | Out-Null
   if ($Browser -eq 'firefox') {
     $Manifest = [ordered]@{
       name = $HostName
-      description = 'Motrix public social-media resolver'
+      description = 'Media Picker native media resolver'
       path = $Launcher
       type = 'stdio'
       allowed_extensions = @($FirefoxExtensionId)
@@ -48,7 +55,7 @@ function Register-Host($Path, $Browser) {
   } else {
     $Manifest = [ordered]@{
       name = $HostName
-      description = 'Motrix public social-media resolver'
+      description = 'Media Picker native media resolver'
       path = $Launcher
       type = 'stdio'
       allowed_origins = @("chrome-extension://$ChromeExtensionId/")
@@ -75,5 +82,5 @@ $FirefoxKey = "HKCU:\Software\Mozilla\NativeMessagingHosts\$HostName"
 New-Item -Path $FirefoxKey -Force | Out-Null
 Set-ItemProperty -Path $FirefoxKey -Name '(default)' -Value $FirefoxManifest
 
-Write-Output 'Motrix Social Resolver installed for on-demand native messaging with yt-dlp EJS and Deno support.'
+Write-Output 'Media Picker installed for on-demand native messaging with yt-dlp EJS and Deno support.'
 Write-Output 'Restart Chrome or Firefox once. No resolver command is needed for each download.'

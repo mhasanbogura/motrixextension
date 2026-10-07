@@ -1,6 +1,6 @@
 {
-  "name": "motrix-webextension-idm",
-  "description": "Motrix WebExtension with a full IDM-style picker and media/link capture.",
+  "name": "motrixextension",
+  "description": "Motrix Extension with a full IDM-style picker and media/link capture.",
   "private": true,
   "version": "1.7.6",
   "license": "MIT",

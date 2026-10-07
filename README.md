@@ -1,19 +1,19 @@
-# Motrix WebExtension
+# Motrix Extension
 
-**Motrix WebExtension** routes browser downloads to Motrix through aria2 JSON-RPC and provides an IDM-style review picker, media and link capture, context-menu downloading, editable filenames, task management, retry actions, and an optional native social-media resolver.
+**Motrix Extension** routes browser downloads to Motrix through aria2 JSON-RPC and provides an IDM-style review picker, media and link capture, context-menu downloading, editable filenames, task management, retry actions, and an optional native Media Picker helper.
 
 > Use this software only for files and media you are authorized to download, and follow the terms and policies of each website.
 
 ## Package contents
 
-The release archive is named `Motrix WebExtension_v<version>.zip`. After extraction, it contains the following top-level entries:
+The release archive is named `MotrixExtension.zip`. After extraction, it contains the following top-level entries:
 
 | Entry | Purpose |
 |---|---|
-| `Motrix WebExtension/Chrome/` | Chrome/Chromium MV3 extension build. |
-| `Motrix WebExtension/Firefox/` | Firefox MV2 extension build. |
-| `Motrix Social Resolver/` | Native resolver, Windows and Linux/macOS installers, and optional `cookies.txt` template. |
-| `Motrix WebExtension_v<version>.md` | Versioned package summary. |
+| `Motrix Extension/Chrome/` | Chrome/Chromium MV3 extension build. |
+| `Motrix Extension/Firefox/` | Firefox MV2 extension build. |
+| `Media Picker/` | Native media helper, Windows and Linux/macOS installers, and optional `cookies.txt` template. |
+| `Motrix Extension.md` | Versioned package summary. |
 | `README.md` | This complete installation and usage guide. |
 
 ## Requirements
@@ -29,12 +29,12 @@ Extract the ZIP to a permanent local folder. Do not load the extension directly 
 The extension and resolver are both inside the same archive:
 
 ```text
-Motrix WebExtension_v<version>.zip/
-├── Motrix WebExtension/
+MotrixExtension.zip/
+├── Motrix Extension/
 │   ├── Chrome/
 │   └── Firefox/
-├── Motrix Social Resolver/
-├── Motrix WebExtension_v<version>.md
+├── Media Picker/
+├── Motrix Extension.md
 └── README.md
 ```
 
@@ -43,7 +43,7 @@ Motrix WebExtension_v<version>.zip/
 Open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select:
 
 ```text
-Motrix WebExtension/Chrome/
+Motrix Extension/Chrome/
 ```
 
 Select the directory containing `manifest.json`, not the parent archive folder. Pin Motrix to the toolbar if desired. These are the standard Chrome local-extension steps. [1]
@@ -54,14 +54,14 @@ After replacing the extension files with a newer release, return to `chrome://ex
 
 A Chrome or Chromium extension loaded with **Load unpacked** should remain installed after the browser restarts, but the selected folder must remain at the same permanent path. Do not load it from a temporary directory, an extracted folder that is later moved, or a build directory that is deleted and recreated.
 
-If Chrome asks you to load it again, remove the old entry from `chrome://extensions`, extract the release to a stable folder such as `C:\\Motrix WebExtension\\` or `~/Motrix WebExtension/`, and load `Motrix WebExtension/Chrome/` again. If Chrome still removes it, check `chrome://extensions` for an error or a managed-browser policy. A browser extension cannot force Chrome to keep an unpacked developer extension installed. For automatic persistent installation and updates, the supported options are a Chrome Web Store installation or a managed Chrome Enterprise policy. [4] [5]
+If Chrome asks you to load it again, remove the old entry from `chrome://extensions`, extract the release to a stable folder such as `C:\\Motrix Extension\\` or `~/Motrix Extension/`, and load `Motrix Extension/Chrome/` again. If Chrome still removes it, check `chrome://extensions` for an error or a managed-browser policy. A browser extension cannot force Chrome to keep an unpacked developer extension installed. For automatic persistent installation and updates, the supported options are a Chrome Web Store installation or a managed Chrome Enterprise policy. [4] [5]
 
 ## Step 3: Install in Firefox
 
 For testing or local use, open `about:debugging`, select **This Firefox**, click **Load Temporary Add-on**, and select `manifest.json` inside:
 
 ```text
-Motrix WebExtension/Firefox/
+Motrix Extension/Firefox/
 ```
 
 Firefox temporary add-ons remain installed until removed or Firefox restarts. A permanent end-user installation requires a Mozilla-signed add-on; the temporary workflow is intended for testing and debugging. [2]
@@ -75,7 +75,7 @@ Open a terminal or PowerShell in the extracted folder:
 ### Linux or macOS
 
 ```bash
-cd "Motrix Social Resolver"
+cd "Media Picker"
 chmod +x install.sh
 ./install.sh
 ```
@@ -110,14 +110,14 @@ http://127.0.0.1:16800/jsonrpc
 
 ## Optional cookies.txt setup
 
-The package contains an empty `Motrix Social Resolver/cookies.txt` template. It contains no real credentials. If a supported site requires authenticated access, provide your own Netscape-format cookie export.
+The package contains an empty `Media Picker/cookies.txt` template. It contains no real credentials. If a supported site requires authenticated access, provide your own Netscape-format cookie export.
 
 After running the installer, replace the installed template at one of these locations:
 
 | Operating system | Installed cookie-file path |
 |---|---|
-| Linux/macOS | `~/.local/share/motrix-social-resolver/cookies.txt` |
-| Windows | `%LOCALAPPDATA%\Motrix Social Resolver\cookies.txt` |
+| Linux/macOS | `~/.local/share/media-picker/cookies.txt` |
+| Windows | `%LOCALAPPDATA%\Media Picker\cookies.txt` |
 
 The resolver uses the local file when it contains valid Netscape cookie rows and otherwise falls back to browser cookies passed by the extension. Never upload, publish, commit, or share a real cookies file. It can grant access to your accounts. Delete it when it is no longer needed and export a fresh file when the cookies expire.
 
@@ -167,10 +167,10 @@ When a normal website is open, the popup also shows a compact **Site File Picker
 | Symptom | Recommended action |
 |---|---|
 | Popup stays on **Checking** | Start Motrix, verify the RPC host/port/path/secret, and run **Test connection**. |
-| Chrome will not load the extension | Select `Motrix WebExtension/Chrome/`, the folder containing `manifest.json`, not the parent archive folder. |
+| Chrome will not load the extension | Select `Motrix Extension/Chrome/`, the folder containing `manifest.json`, not the parent archive folder. |
 | Firefox cannot load the extension | Use `about:debugging → This Firefox → Load Temporary Add-on` and select the Firefox `manifest.json`. |
-| Social resolver is unavailable | Run the latest installer once, restart the browser, and confirm the native helper folder was installed. |
-| Social resolver reports no direct format | Try the latest resolver installer, keep the site signed in if required, and use your own local cookies.txt only when authorized. Some videos remain unavailable. |
+| Media Picker is unavailable | Run the latest installer once, restart the browser, and confirm the native helper folder was installed. |
+| Media Picker reports no direct format | Try the latest resolver installer, keep the site signed in if required, and use your own local cookies.txt only when authorized. Some videos remain unavailable. |
 | A download fails after the picker | Open the **Error** lane and use **Retry**. Retry resolves the original page again instead of reusing an expired direct stream. |
 | Rename appears unchanged | Install the latest extension package, ensure Motrix/aria2 still reports the task, and enter a filename without folders. The original extension is preserved automatically. |
 | The Site File Picker switch appears ineffective | Install the latest extension, toggle **Site File Picker** off, and refresh the page. The in-page purple **Download with Motrix** button should disappear for that host. |
@@ -197,7 +197,7 @@ To create the combined versioned ZIP after both browser builds complete:
 scripts/package-release.sh
 ```
 
-The archive is written to `packages/Motrix WebExtension_v<version>.zip` and includes the Chrome build, Firefox build, native resolver, versioned Markdown summary, and this README.
+The archive is written to `packages/MotrixExtension.zip` and includes the Chrome build, Firefox build, Media Picker helper, package summary, and this README.
 
 ## References
 

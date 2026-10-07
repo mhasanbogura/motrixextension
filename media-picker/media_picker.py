@@ -178,10 +178,10 @@ def find_cookie_file() -> Path | None:
         candidates.append(Path(configured_path).expanduser())
     candidates.append(Path(__file__).with_name("cookies.txt"))
     data_home = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share"))
-    candidates.append(data_home / "motrix-social-resolver" / "cookies.txt")
+    candidates.append(data_home / "media-picker" / "cookies.txt")
     local_app_data = os.environ.get("LOCALAPPDATA")
     if local_app_data:
-        candidates.append(Path(local_app_data) / "Motrix Social Resolver" / "cookies.txt")
+        candidates.append(Path(local_app_data) / "Media Picker" / "cookies.txt")
 
     for path in candidates:
         if not path.is_file():
@@ -422,7 +422,7 @@ def clean_error(value: str, hostname: str = "") -> str:
     is_youtube = hostname in {"youtube.com", "youtu.be"} or hostname.endswith(".youtube.com")
     is_pornhub = hostname == "pornhub.com" or hostname.endswith(".pornhub.com")
     if is_youtube and ("no supported javascript runtime" in lowered or "javascript runtime" in lowered):
-        return "YouTube now requires the resolver's JavaScript runtime. Run the latest one-time Motrix Social Resolver installer."
+        return "YouTube now requires the picker's JavaScript runtime. Run the latest one-time Media Picker installer."
     if is_youtube and ("sign in to confirm" in lowered or "not a bot" in lowered):
         return "YouTube blocked this request. Keep YouTube signed in in the browser, then run the latest resolver installer and try again."
     if is_youtube and ("po token" in lowered or "poh token" in lowered):
